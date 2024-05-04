@@ -82,7 +82,7 @@ class Trainer(Base):
             state['network'].pop(k, None)
 
         torch.save(state, file_path)
-        self.logger.info("Write snapshot into {}".format(file_path))
+        self.logger.debug("Write snapshot into {}".format(file_path))
 
     def load_model(self, model, optimizer):
         if cfg.pretrained_model_path is not None:
@@ -90,7 +90,7 @@ class Trainer(Base):
             ckpt = torch.load(ckpt_path)
             start_epoch = 0
             model.load_state_dict(ckpt['network'], strict=False)
-            self.logger.info('Load checkpoint from {}'.format(ckpt_path))
+            self.logger.debug('Load checkpoint from {}'.format(ckpt_path))
         else:
             start_epoch = 0
 
@@ -103,7 +103,7 @@ class Trainer(Base):
 
     def _make_batch_generator(self):
         # data load and construct batch generator
-        self.logger.info("Creating dataset...")
+        self.logger.debug("Creating dataset...")
         trainset3d_loader = []
         for i in range(len(cfg.trainset_3d)):
             trainset3d_loader.append(eval(cfg.trainset_3d[i])(transforms.ToTensor(), "train"))
@@ -133,7 +133,7 @@ class Trainer(Base):
 
     def _make_model(self):
         # prepare network
-        self.logger.info("Creating graph and optimizer...")
+        self.logger.debug("Creating graph and optimizer...")
         model = get_model('train')
         model = DataParallel(model).cuda()
         optimizer = self.get_optimizer(model)
@@ -158,7 +158,7 @@ class Tester(Base):
 
     def _make_batch_generator(self):
         # data load and construct batch generator
-        self.logger.info("Creating dataset...")
+        self.logger.debug("Creating dataset...")
         testset_loader = eval(cfg.testset)(transforms.ToTensor(), "test")
         batch_generator = DataLoader(dataset=testset_loader, batch_size=cfg.num_gpus * cfg.test_batch_size,
                                      shuffle=False, num_workers=cfg.num_thread, pin_memory=True)
@@ -167,10 +167,10 @@ class Tester(Base):
         self.batch_generator = batch_generator
 
     def _make_model(self):
-        self.logger.info('Load checkpoint from {}'.format(cfg.pretrained_model_path))
+        self.logger.debug('Load checkpoint from {}'.format(cfg.pretrained_model_path))
 
         # prepare network
-        self.logger.info("Creating graph...")
+        # self.logger.debug("Creating graph...")
         model = get_model('test')
         model = DataParallel(model).cuda()
         ckpt = torch.load(cfg.pretrained_model_path)
@@ -200,10 +200,10 @@ class Demoer(Base):
         super(Demoer, self).__init__(log_name='test_logs.txt')
 
     def _make_model(self):
-        self.logger.info('Load checkpoint from {}'.format(cfg.pretrained_model_path))
+        self.logger.debug('Load checkpoint from {}'.format(cfg.pretrained_model_path))
 
         # prepare network
-        self.logger.info("Creating graph...")
+        # self.logger.debug("Creating graph...")
         model = get_model('test')
         model = DataParallel(model).cuda()
         ckpt = torch.load(cfg.pretrained_model_path)

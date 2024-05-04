@@ -1,0 +1,24 @@
+{
+    // IntelliSense を使用して利用可能な属性を学べます。
+    // 既存の属性の説明をホバーして表示します。
+    // 詳細情報は次を確認してください: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "OSX",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "demo.py",
+            "cwd": "${workspaceFolder}/demo",
+            "python": "${command:python.interpreterPath}",
+            "args": [
+                "--gpu",
+                "0",
+                "--img_path",
+                "buster_306.png",
+                "--output_folder",
+                "output"
+            ]
+        }
+    ]
+}
